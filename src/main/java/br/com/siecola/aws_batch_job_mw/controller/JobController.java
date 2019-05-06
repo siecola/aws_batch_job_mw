@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
+@RequestMapping("/api")
 public class JobController {
 
     private static final Logger log = LoggerFactory.getLogger(JobController.class);
@@ -25,7 +26,7 @@ public class JobController {
         this.jobService = jobService;
     }
 
-    @PostMapping
+    @PostMapping("/job")
     public ResponseEntity<JobResponse> createNewJob(
             @Valid @RequestBody JobRequest jobRequest) {
 
@@ -37,9 +38,8 @@ public class JobController {
     }
 
 
-    @GetMapping
-    public ResponseEntity<?> checkJobStatus(
-            @Valid @PathVariable String jobId) {
+    @GetMapping("/job/{jobId}")
+    public ResponseEntity<?> checkJobStatus(@PathVariable String jobId) {
 
         JobResponse jobResponse = null;
         try {
