@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 @NoRepositoryBean
-public interface BaseRepository <T, ID extends Serializable> extends Repository<T, ID> {
+public interface BaseRepository <T, ID extends Serializable>
+        extends Repository<T, ID> {
 
     void delete(T delete);
 

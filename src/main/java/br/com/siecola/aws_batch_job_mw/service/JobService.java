@@ -27,7 +27,8 @@ public class JobService {
 
     private static final Logger log = LoggerFactory.getLogger(JobService.class);
 
-    private static final String JOB_ID_PREFIX = Headers.S3_USER_METADATA_PREFIX + "job-id";
+    private static final String JOB_ID_PREFIX = Headers.S3_USER_METADATA_PREFIX +
+            "job-id";
     private AmazonS3 amazonS3;
     private JobRepository jobRepository;
 
@@ -70,12 +71,14 @@ public class JobService {
     }
 
     private String generateS3Url(String jobId, Instant expire) {
-        GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(awsBucketName, jobId)
+        GeneratePresignedUrlRequest generatePresignedUrlRequest =
+                new GeneratePresignedUrlRequest(awsBucketName, jobId)
                 .withMethod(HttpMethod.PUT)
                 .withExpiration(Date.from(expire));
 
         generatePresignedUrlRequest.addRequestParameter(JOB_ID_PREFIX, jobId);
-        return amazonS3.generatePresignedUrl(generatePresignedUrlRequest).toString();
+        return amazonS3.generatePresignedUrl(generatePresignedUrlRequest)
+                .toString();
     }
 
     private Job createJob(JobRequest jobRequest, long expiresInSeconds) {

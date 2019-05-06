@@ -26,7 +26,8 @@ import org.springframework.stereotype.Component;
 @Order(2)
 public class DynamoDBStreamConfig implements ApplicationRunner {
 
-    private static final Logger log = LoggerFactory.getLogger(DynamoDBStreamConfig.class);
+    private static final Logger log = LoggerFactory
+            .getLogger(DynamoDBStreamConfig.class);
 
     @Value("${amazon.aws.region}")
     private String awsRegion;
@@ -40,17 +41,24 @@ public class DynamoDBStreamConfig implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         log.info("Initializing DynamoDB streaming");
 
-        String awsDynamoDBStreamEndpoint = "streams.dynamodb." + awsRegion + ".amazonaws.com";
-        String awsCloudWatchEndpoint = "monitoring." + awsRegion + ".amazonaws.com";
+        String awsDynamoDBStreamEndpoint = "streams.dynamodb." + awsRegion +
+                ".amazonaws.com";
+        String awsCloudWatchEndpoint = "monitoring." + awsRegion +
+                ".amazonaws.com";
 
-        DefaultAWSCredentialsProviderChain defaultAWSCredentialsProviderChain = new DefaultAWSCredentialsProviderChain();
-        DynamoDBStreamsRecordProcessorFactory dynamoDBStreamsRecordProcessorFactory = new DynamoDBStreamsRecordProcessorFactory();
+        DefaultAWSCredentialsProviderChain defaultAWSCredentialsProviderChain =
+                new DefaultAWSCredentialsProviderChain();
+        DynamoDBStreamsRecordProcessorFactory dynamoDBStreamsRecordProcessorFactory =
+                new DynamoDBStreamsRecordProcessorFactory();
 
-        AmazonDynamoDBStreamsAdapterClient amazonDynamoDBStreamsAdapterClient = new AmazonDynamoDBStreamsAdapterClient(defaultAWSCredentialsProviderChain, new ClientConfiguration());
+        AmazonDynamoDBStreamsAdapterClient amazonDynamoDBStreamsAdapterClient =
+                new AmazonDynamoDBStreamsAdapterClient(defaultAWSCredentialsProviderChain,
+                        new ClientConfiguration());
         amazonDynamoDBStreamsAdapterClient.setEndpoint(awsDynamoDBStreamEndpoint);
 
         AmazonCloudWatch amazonCloudWatch = AmazonCloudWatchClientBuilder.standard()
-                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(awsCloudWatchEndpoint, awsRegion))
+                .withEndpointConfiguration(new AwsClientBuilder
+                        .EndpointConfiguration(awsCloudWatchEndpoint, awsRegion))
                 .withCredentials(defaultAWSCredentialsProviderChain)
                 .build();
 
@@ -58,19 +66,24 @@ public class DynamoDBStreamConfig implements ApplicationRunner {
 
         String workerId = "job-worker-" + EC2MetadataUtils.getInstanceId();
 
-        KinesisClientLibConfiguration workerConfig = new KinesisClientLibConfiguration(
-                "job-worker", latestStreamArn, defaultAWSCredentialsProviderChain, workerId)
+        KinesisClientLibConfiguration workerConfig =
+                new KinesisClientLibConfiguration("job-worker",
+                        latestStreamArn, defaultAWSCredentialsProviderChain,
+                        workerId)
                 .withMaxRecords(10)
                 .withIdleTimeBetweenReadsInMillis(1000)
                 .withInitialPositionInStream(InitialPositionInStream.TRIM_HORIZON);
 
-        worker = new Worker(dynamoDBStreamsRecordProcessorFactory, workerConfig, amazonDynamoDBStreamsAdapterClient, amazonDynamoDB, amazonCloudWatch);
+        worker = new Worker(dynamoDBStreamsRecordProcessorFactory, workerConfig,
+                amazonDynamoDBStreamsAdapterClient, amazonDynamoDB,
+                amazonCloudWatch);
 
         worker.run();
         log.info("DynamoDB stream started");
     }
 
-    private static String describeLatestStreamArn(AmazonDynamoDB amazonDynamoDB, String tableName) {
+    private static String describeLatestStreamArn(AmazonDynamoDB amazonDynamoDB,
+                                                  String tableName) {
         return amazonDynamoDB.describeTable(new DescribeTableRequest()
                 .withTableName(tableName)).getTable().getLatestStreamArn();
     }

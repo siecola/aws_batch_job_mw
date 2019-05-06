@@ -27,21 +27,25 @@ public class JobRecordProcessor implements IRecordProcessor {
     }
 
     @Override
-    public void processRecords(List<Record> records, IRecordProcessorCheckpointer checkpointer) {
+    public void processRecords(List<Record> records,
+                               IRecordProcessorCheckpointer checkpointer) {
         for (Record record : records) {
             if (record instanceof RecordAdapter) {
-                com.amazonaws.services.dynamodbv2.model.Record streamRecord = ((RecordAdapter) record)
-                        .getInternalObject();
+                com.amazonaws.services.dynamodbv2.model.Record streamRecord =
+                        ((RecordAdapter) record).getInternalObject();
 
-                Map<String, AttributeValue> newImage = streamRecord.getDynamodb().getNewImage();
+                Map<String, AttributeValue> newImage = streamRecord.getDynamodb()
+                        .getNewImage();
                 Job job = buildJob(newImage);
 
                 if ("MODIFY".equals(streamRecord.getEventName())) {
 
-                    LOG.info("Received JobId: {} - Sending notification...", job.getId());
+                    LOG.info("Received JobId: {} - Sending notification...",
+                            job.getId());
                 } else if ("REMOVE".equals(streamRecord.getEventName())) {
 
-                    LOG.info("Removed JobId: {} - Sending notification...", job.getId());
+                    LOG.info("Removed JobId: {} - Sending notification...",
+                            job.getId());
                 }
                 break;
             }
@@ -74,7 +78,8 @@ public class JobRecordProcessor implements IRecordProcessor {
     }
 
     @Override
-    public void shutdown(IRecordProcessorCheckpointer checkpointer, ShutdownReason reason) {
+    public void shutdown(IRecordProcessorCheckpointer checkpointer,
+                         ShutdownReason reason) {
         if (reason == ShutdownReason.TERMINATE) {
             try {
                 checkpointer.checkpoint();
