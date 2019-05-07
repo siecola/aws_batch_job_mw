@@ -1,26 +1,35 @@
 package br.com.siecola.aws_batch_job_mw.config;
 
+import br.com.siecola.aws_batch_job_mw.repository.JobRepository;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRepositories;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@EnableDynamoDBRepositories(dynamoDBMapperConfigRef = "dynamoDBMapperConfig",
-        basePackages = {"br.com.siecola.aws_batch_job_mw.repository"})
+@EnableDynamoDBRepositories(basePackageClasses = JobRepository.class)
 public class DynamoDBConfig {
 
-    @Value("${amazon.aws.region}")
-    private String awsRegion;
+    @Bean
+    public DynamoDBMapperConfig dynamoDBMapperConfig() {
+        return DynamoDBMapperConfig.DEFAULT;
+    }
 
     @Bean
-    public AmazonDynamoDB amazonDynamoDBClient() {
+    public DynamoDBMapper dynamoDBMapper(AmazonDynamoDB amazonDynamoDB,
+                                         DynamoDBMapperConfig config) {
+        return new DynamoDBMapper(amazonDynamoDB, config);
+    }
+
+    @Bean
+    public AmazonDynamoDB amazonDynamoDB() {
         return AmazonDynamoDBClientBuilder.standard()
-                .withRegion(awsRegion)
                 .withCredentials(new DefaultAWSCredentialsProviderChain())
-                .build();
+                .withRegion(Regions.US_EAST_1).build();
     }
 }

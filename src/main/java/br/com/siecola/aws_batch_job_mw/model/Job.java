@@ -4,7 +4,7 @@ import br.com.siecola.aws_batch_job_mw.enums.JobStatus;
 import br.com.siecola.aws_batch_job_mw.enums.JobType;
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
 
-@DynamoDBTable(tableName = "job-transaction")
+@DynamoDBTable(tableName = "job")
 public class Job {
 
     public static final String ID = "id";
