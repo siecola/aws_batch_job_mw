@@ -62,7 +62,7 @@ public class JobService {
             JobResponse jobResponse = new JobResponse();
             jobResponse.setJobId(job.getId());
             jobResponse.setNumberOfRegisters(job.getNumberOfRegisters());
-            jobResponse.setStatus(job.getStatus());
+            jobResponse.setStatus(JobStatus.valueOf(job.getStatus()));
             return jobResponse;
         } else {
             log.error("Job {} not found", jobId);
@@ -89,7 +89,7 @@ public class JobService {
         job.setType(jobRequest.getJobType());
         job.setUsername(jobRequest.getUsername());
         job.setNumberOfRegisters(0);
-        job.setStatus(JobStatus.NEW);
+        job.setStatus(JobStatus.NEW.name());
         job.setTtl(expiresInSeconds);
         job.setAttempts(3);
         job.setDefinition("first-run-job-definition");

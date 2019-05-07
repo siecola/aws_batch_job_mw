@@ -1,6 +1,5 @@
 package br.com.siecola.aws_batch_job_mw.model;
 
-import br.com.siecola.aws_batch_job_mw.enums.JobStatus;
 import br.com.siecola.aws_batch_job_mw.enums.JobType;
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
 
@@ -28,9 +27,8 @@ public class Job {
     @DynamoDBAttribute(attributeName = USERNAME)
     private String username;
 
-    @DynamoDBTypeConvertedEnum
     @DynamoDBAttribute(attributeName = STATUS)
-    private JobStatus status;
+    private String status;
 
     @DynamoDBTypeConvertedEnum
     @DynamoDBAttribute(attributeName = TYPE)
@@ -73,11 +71,11 @@ public class Job {
         this.id = id;
     }
 
-    public JobStatus getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(JobStatus status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

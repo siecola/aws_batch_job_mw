@@ -64,7 +64,7 @@ public class JobRecordProcessor implements IRecordProcessor {
     private Job buildJob(Map<String, AttributeValue> newImage) {
         Job job = new Job();
         job.setId(newImage.get(Job.ID).getS());
-        job.setStatus(JobStatus.valueOf(newImage.get(Job.STATUS).getS()));
+        job.setStatus(newImage.get(Job.STATUS).getS());
         job.setNumberOfRegisters(Integer.parseInt(newImage.get(Job.NUM_REGISTERS).getN()));
         job.setType(JobType.valueOf(newImage.get(Job.TYPE).getS()));
         job.setvCpu(Integer.parseInt(newImage.get(Job.VCPU).getN()));
