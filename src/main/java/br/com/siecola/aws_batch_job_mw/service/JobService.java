@@ -92,7 +92,7 @@ public class JobService {
         job.setStatus(JobStatus.NEW);
         job.setTtl(expiresInSeconds);
         job.setAttempts(3);
-        job.setDefinition("first-run-job-definition:2");
+        job.setDefinition("first-run-job-definition");
         job.setQueue("first-run-job-queue");
 
         return jobRepository.save(job);
