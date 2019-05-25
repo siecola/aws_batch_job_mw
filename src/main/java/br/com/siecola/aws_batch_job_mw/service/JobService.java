@@ -102,7 +102,7 @@ public class JobService {
         switch (jobType) {
             case LARGE:
                 job.setMemory(3600);
-                job.setvCpu(4);
+                job.setvCpu(3);
                 break;
             case MEDIUM:
                 job.setMemory(2400);

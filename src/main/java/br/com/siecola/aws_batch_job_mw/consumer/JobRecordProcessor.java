@@ -34,15 +34,15 @@ public class JobRecordProcessor implements IRecordProcessor {
                 com.amazonaws.services.dynamodbv2.model.Record streamRecord =
                         ((RecordAdapter) record).getInternalObject();
 
-                Map<String, AttributeValue> newImage = streamRecord.getDynamodb()
-                        .getNewImage();
-                Job job = buildJob(newImage);
-
                 if ("MODIFY".equals(streamRecord.getEventName())) {
+                    Job job = buildJob(streamRecord.getDynamodb()
+                            .getNewImage());
 
                     LOG.info("Received JobId: {} - Sending notification...",
                             job.getId());
                 } else if ("REMOVE".equals(streamRecord.getEventName())) {
+                    Job job = buildJob(streamRecord.getDynamodb()
+                            .getNewImage());
 
                     LOG.info("Removed JobId: {} - Sending notification...",
                             job.getId());
